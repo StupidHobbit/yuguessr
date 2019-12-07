@@ -1,3 +1,39 @@
+$minimap-width: 300px;
+$minimap-height: 200px;
+
+.ymaps-2-1-75-panorama-control__fullscreen {
+  position: fixed;
+  top: 10vh;
+  left: 12px;
+}
+.game-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #00000080;
+}
 .player {
-  height: 200px;
+  width: 100vw;
+  height: 100vh;
+}
+.minimap {
+  width: $minimap-width - 100px;
+  height: $minimap-height - 100px;
+  opacity: .7;
+  background-color: yellow;
+  position: fixed;
+  right: 4px;
+  bottom: 40px;
+  border-radius: 10px;
+  transition: all .2s ease-out;
+}
+.minimap:hover {
+  width: $minimap-width;
+  height: $minimap-height;
+  opacity: 1;
 }

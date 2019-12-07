@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './Map.scss';
 
 class Map extends Component {
@@ -12,7 +12,7 @@ class Map extends Component {
         if (!window.ymaps) {
             // Yandex Maps Script isn't loaded yet, wait for it
             const listener = () => {
-                window.removeEventListener('listener', listener);
+                window.removeEventListener('load', listener);
                 window.ymaps.ready(this.buildMap);
             };
             window.addEventListener('load', listener);
@@ -35,6 +35,11 @@ class Map extends Component {
     buildMap = () => {
         const ymaps = window.ymaps;
 
+        if (!ymaps) {
+            this.handlePanoramaError(new Error('Yandex Maps script didn\'t load'));
+            return;
+        }
+
         if (!ymaps.panorama.isSupported()) {
             console.warn('Yandex Maps not supported'); // TODO: render better message
             return;
@@ -51,10 +56,8 @@ class Map extends Component {
                 (player) => {
                     this.playerInstance = player;
                     window.PLAYER = player;
-                    console.log(this.playerInstance);
                     this.playerInstance.events.add('panoramachange', () => {
                         this.playerInstance.getPanorama()._markers.length = 0;
-                        console.log(this.playerInstance.getPanorama());
                     });
                 },
                 (error) => {
@@ -73,7 +76,11 @@ class Map extends Component {
         }
 
         return (
-            <div className="player" id={this.playerId} />
+            <Fragment>
+                <div className="player" id={this.playerId} />
+                <header className="game-header">Yuguesser</header>
+                <div className="minimap" />
+            </Fragment>
         );
     }
 }
