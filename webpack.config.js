@@ -26,11 +26,11 @@ module.exports = {
     },
     plugins: [
         new HTMLWebpackPlugin({
-            template: './public/index.html',
+            template: './client/public/index.html',
             filename: 'index.html',
             chunks: ['app'],
             hash: true,
-            favicon: './public/favicon.png',
+            favicon: './client/public/favicon.png',
             templateParameters: {
                 apiKey: process.env.API_KEY,
             },
