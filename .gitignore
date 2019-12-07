@@ -1,2 +1,4 @@
 node_modules
-client/build
+build
+.idea
+!.idea/runConfigurations
