@@ -3,3 +3,4 @@ build
 .idea
 !.idea/runConfigurations
 .DS_Store
+server/__pycache__/

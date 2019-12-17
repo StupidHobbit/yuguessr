@@ -3,9 +3,7 @@ import './Map.scss';
 
 class Map extends Component {
     playerId = null;
-    // coords = [59.938557, 30.316198];
-    coords = [59.98282, 30.316198];
-    panoramaType = { layer: 'yandex#panorama' };
+    coords = [59.938557, 30.316198];
     playerInstance = null;
 
     componentDidMount() {

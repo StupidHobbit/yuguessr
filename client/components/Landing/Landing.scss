@@ -1,0 +1,46 @@
+$primary-color: #008B8B;
+$primary-darkened: darken($primary-color, 7);
+$shadow-size: 7px;
+$shadow-offset: 2px;
+
+.landing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background-color: darkcyan;
+
+  &__start-game-button {
+    outline: none;
+    cursor: pointer;
+    transform: translateY(0px);
+    padding: 1.8rem 3rem;
+    font-size: 2.2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #0affe8;
+    color: $primary-darkened;
+    box-shadow: 0 $shadow-size 0 0 $primary-darkened;
+    transition: all .1s ease-out;
+
+    &:hover {
+      transform: translateY($shadow-offset);
+      box-shadow: 0 $shadow-size - $shadow-offset 0 0 $primary-darkened;;
+    }
+  }
+
+  .landing &__icon {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    color: $primary-darkened;
+    transform: rotate(45deg) translateY(-50%);
+    width: 70vw;
+    min-width: 300px;
+    min-height: 300px;
+    max-width: 700px;
+    max-height: 700px;
+    height: 70vw;
+  }
+}
