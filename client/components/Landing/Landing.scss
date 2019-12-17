@@ -10,6 +10,7 @@ $shadow-offset: 2px;
   height: 100vh;
   overflow: hidden;
   background-color: darkcyan;
+  position: relative;
 
   &__start-game-button {
     outline: none;
