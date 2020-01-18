@@ -1,3 +1,5 @@
+from random import randint
+
 import falcon
 
 from server.resources.redis import RedisResource
@@ -14,21 +16,14 @@ class Resource(RedisResource):
         return game_id
 
     def create_map(self, game_id: int) -> int:
-        coordinates, direction = self.generate_random_place()
+        level_id = 1
+        level = self.get_object('level', level_id)
+
+        place_id = randint(1, int(level['size']))
+        place = self.get_object(f'level:{level_id}:place', place_id)
+
         return self.create_object(
             f'map:{game_id}',
             points=0,
-            latitude=coordinates[0],
-            longitude=coordinates[1],
-            zenith=direction[0],
-            azimuth=direction[1],
+            **place
         )
-
-    def generate_random_place(self):
-        return self.generate_random_coords(), self.generate_random_direction()
-
-    def generate_random_coords(self):
-        return (60.099722, 55.177752)
-
-    def generate_random_direction(self):
-        return (207.311798, 23.043420)
