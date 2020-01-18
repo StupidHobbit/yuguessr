@@ -1,3 +1,4 @@
 falcon
 gunicorn
 redis
+falcon-cors

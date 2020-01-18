@@ -22,7 +22,10 @@ def run_redis():
     if not path.exists(f'redis/redis-{REDIS_VERSION}'):
         download_redis()
     os.chdir('redis')
-    redis = subprocess.Popen([f'redis-{REDIS_VERSION}/src/redis-server'], stdout=sys.stdout)
+    redis = subprocess.Popen([
+        f'redis-{REDIS_VERSION}/src/redis-server',
+        f'redis-{REDIS_VERSION}/redis.conf'
+    ], stdout=sys.stdout)
     os.chdir('..')
     return redis
 
