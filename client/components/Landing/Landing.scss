@@ -24,6 +24,8 @@ $shadow-offset: 2px;
     color: $primary-darkened;
     box-shadow: 0 $shadow-size 0 0 $primary-darkened;
     transition: all .1s ease-out;
+    text-decoration: none;
+    font-family: sans-serif;
 
     &:hover {
       transform: translateY($shadow-offset);
