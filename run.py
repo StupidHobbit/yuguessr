@@ -24,7 +24,7 @@ def run_redis():
     os.chdir('redis')
     redis = subprocess.Popen([
         f'redis-{REDIS_VERSION}/src/redis-server',
-        f'redis-{REDIS_VERSION}/redis.conf'
+        f'redis-{REDIS_VERSION}/redis.conf',
     ], stdout=sys.stdout)
     os.chdir('..')
     return redis
@@ -38,6 +38,10 @@ def download_redis():
     subprocess.call(['tar', 'xzf', f'redis-{REDIS_VERSION}.tar.gz'], stdout=sys.stdout)
     os.chdir(f'redis-{REDIS_VERSION}')
     subprocess.call(['make'], stdout=sys.stdout)
+
+    with open('redis.conf', 'a') as conf:
+        print('unixsocket /tmp/redis.sock', file=conf)
+
     os.chdir('../..')
 
 
