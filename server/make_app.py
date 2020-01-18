@@ -5,11 +5,11 @@ from falcon_cors import CORS
 
 from server.resources import main_page, game, start_game, map
 
-USER_URL = 'http://localhost:8080'
+USER_URLS = ['http://127.0.0.1:8080', 'http://localhost:8080']
 
 
 def make_app():
-    cors = CORS(allow_origins_list=[USER_URL])
+    cors = CORS(allow_origins_list=USER_URLS)
 
     app = falcon.API(middleware=[cors.middleware])
 
