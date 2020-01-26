@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom';
 import './Landing.scss';
 import { API_ORIGIN } from '../../config';
+import Map from '../Map/Map';
 
 class Landing extends Component {
+    state = {
+        gameState: Landing.STATES.NOT_STARTED,
+        metadata: null,
+    };
+
+    static STATES = {
+        NOT_STARTED: 'notStarted',
+        READY: 'ready',
+    };
+
     async startGame() {
         try {
             let res;
@@ -16,26 +26,26 @@ class Landing extends Component {
 
             const { game_id } = await res.json();
 
-            console.log(`game_id: ${game_id}`);
-
             res = await fetch(`${API_ORIGIN}/game/${game_id}`);
 
-            const { map_number, total_points } = await res.json();
+            const { current_map, total_points } = await res.json();
+            const {
+                azimuth,
+                latitude,
+                longitude,
+                zenith,
+            } = current_map;
 
-            console.log(`map_number: ${map_number}`);
-            console.log(`total_points: ${total_points}`);
-
-            res = await fetch(`${API_ORIGIN}/game/${game_id}/map/${map_number}`);
-
-            const { azimuth, latitude, longitude, points, zenith } = await res.json();
-
-            console.log('final data:');
-            console.log(`azimuth: ${azimuth}`);
-            console.log(`latitude: ${latitude}`);
-            console.log(`longitude ${longitude}`);
-            console.log(`points: ${points}`);
-            console.log(`zenith: ${zenith}`);
-            console.log(`total points: ${total_points}`);
+            this.setState({
+                gameState: Landing.STATES.READY,
+                metadata: {
+                    azimuth,
+                    latitude,
+                    longitude,
+                    zenith,
+                    gameId: game_id,
+                },
+            });
         } catch (err) {
             console.log('HTTP Error');
             console.log(err);
@@ -43,19 +53,29 @@ class Landing extends Component {
     };
 
     render() {
-        return (
-            <main className="landing">
-                <FontAwesomeIcon className="landing__icon" icon={faGlobe} />
-                <button
-                    onClick={() => {
-                        this.startGame();
-                    }}
-                    className="landing__start-game-button"
-                >
-                    Start Game
-                </button>
-            </main>
-        );
+        const { gameState, metadata } = this.state;
+
+        if (gameState === Landing.STATES.NOT_STARTED) {
+            return (
+                <main className="landing">
+                    <FontAwesomeIcon className="landing__icon" icon={faGlobe} />
+                    <button
+                        onClick={() => {
+                            this.startGame();
+                        }}
+                        className="landing__start-game-button"
+                    >
+                        Start Game
+                    </button>
+                </main>
+            );
+        }
+
+        if (gameState === Landing.STATES.READY) {
+            return (
+                <Map data={metadata} />
+            );
+        }
     }
 }
 

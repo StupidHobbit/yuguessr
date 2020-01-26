@@ -3,7 +3,6 @@ import './Map.scss';
 
 class Map extends Component {
     playerId = null;
-    coords = [59.938557, 30.316198];
     playerInstance = null;
 
     componentDidMount() {
@@ -31,6 +30,13 @@ class Map extends Component {
     };
 
     buildMap = () => {
+        const { data: {
+            gameId, // TODO: send on map submit
+            azimuth,
+            latitude,
+            longitude,
+            zenith,
+        } = {} } = this.props;
         const ymaps = window.ymaps;
 
         if (!ymaps) {
@@ -47,16 +53,17 @@ class Map extends Component {
         // panorama in the area of the specified coordinates
         ymaps.panorama.createPlayer(
             this.playerId,
-            this.coords,
-            { controls: ['fullscreenControl', 'zoomControl'], suppressMapOpenBlock: true, layer: 'yandex#panorama' },
+            [longitude, latitude],
+            {
+                controls: ['fullscreenControl', 'zoomControl'],
+                suppressMapOpenBlock: true,
+                layer: 'yandex#panorama',
+                direction: [zenith, azimuth],
+            },
         )
             .done(
                 (player) => {
                     this.playerInstance = player;
-                    window.PLAYER = player;
-                    this.playerInstance.events.add('panoramachange', () => {
-                        this.playerInstance.getPanorama()._markers.length = 0;
-                    });
                 },
                 (error) => {
                     this.handlePanoramaError(error);
@@ -69,14 +76,16 @@ class Map extends Component {
     };
 
     render() {
+        const { data: { totalPoints } = {} } = this.props;
+
         if (!this.playerId) {
             this.playerId = this.generateRandomPlayerID();
         }
 
         return (
             <Fragment>
+                <header className="game-header">Yuguesser, Score: {totalPoints}</header>
                 <div className="player" id={this.playerId} />
-                <header className="game-header">Yuguesser</header>
                 <div className="minimap" />
             </Fragment>
         );

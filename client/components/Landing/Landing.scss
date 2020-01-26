@@ -1,5 +1,4 @@
-$primary-color: #008B8B;
-$primary-darkened: darken($primary-color, 7);
+@import "../../variables";
 $shadow-size: 7px;
 $shadow-offset: 2px;
 
