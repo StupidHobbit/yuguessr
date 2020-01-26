@@ -8,4 +8,7 @@ class Resource(RedisResource):
         response.media = self.get_game(game_id)
 
     def get_game(self, game_id: int):
-        return self.get_object('game', game_id)
+        game = self.get_object('game', game_id)
+        map_number = game.pop('map_number')
+        game['current_map'] = self.get_map(game_id, map_number)
+        return game

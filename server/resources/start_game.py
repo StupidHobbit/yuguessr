@@ -11,7 +11,7 @@ class Resource(RedisResource):
         response.media = {'game_id': game_id}
 
     def create_game(self):
-        game_id = self.create_object('game', total_points=0, map_number=1)
+        game_id = self.create_object('game', total_points=0, map_number=1, current_map=1)
         self.create_map(game_id)
         return game_id
 
