@@ -28,13 +28,12 @@ class Landing extends Component {
 
             res = await fetch(`${API_ORIGIN}/game/${game_id}`);
 
-            const { current_map, total_points } = await res.json();
-            const {
+            const { current_map: {
                 azimuth,
                 latitude,
                 longitude,
                 zenith,
-            } = current_map;
+            } = {}, total_points } = await res.json();
 
             this.setState({
                 gameState: Landing.STATES.READY,
@@ -44,6 +43,7 @@ class Landing extends Component {
                     longitude,
                     zenith,
                     gameId: game_id,
+                    totalPoints: total_points,
                 },
             });
         } catch (err) {
