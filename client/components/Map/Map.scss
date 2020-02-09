@@ -1,10 +1,14 @@
 @import '../../variables';
 
-$minimap-width: 300px;
-$minimap-height: 200px;
+$minimap-width: 640px;
+$minimap-height: 400px;
+$minified-minimap-width: $minimap-width / 2.4;
+$minified-minimap-height: $minimap-height / 2.4;
+$transition-length: .2s;
 $header-height: 7vh;
 
 .game-header {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -12,25 +16,65 @@ $header-height: 7vh;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: $primary-color;
+  background-color: #fff;
+  box-shadow: 0 0 3px 0 $dark-gray;
+  z-index: 1;
 }
+
 .player {
   width: 100vw;
   height: 100vh - $header-height;
+  margin-top: $header-height;
 }
+
 .minimap {
-  width: $minimap-width - 100px;
-  height: $minimap-height - 100px;
+  width: $minified-minimap-width;
+  height: $minified-minimap-height;
   opacity: .7;
-  background-color: yellow;
   position: fixed;
   right: 4px;
   bottom: 40px;
   border-radius: 10px;
-  transition: all .2s ease-out;
+  transition: all $transition-length ease-out;
+  overflow: hidden;
+
+  &:hover {
+    width: $minimap-width;
+    height: $minimap-height;
+    opacity: 1;
+    box-shadow: 0 0 7px 1px $dark-gray;
+  }
+
+  &__outer-wrapper {
+    width: $minified-minimap-width;
+    height: $minified-minimap-height;
+    transition: all $transition-length ease-out;
+    position: relative;
+
+    &:hover {
+      width: $minimap-width;
+      height: $minimap-height;
+    }
+  }
+
+  &__wrapper {
+    position: absolute;
+    width: $minimap-width;
+    height: $minimap-height;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
-.minimap:hover {
-  width: $minimap-width;
-  height: $minimap-height;
-  opacity: 1;
+
+.guess-button {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background-color: greenyellow;
+  visibility: hidden;
+
+  &_visible {
+    visibility: visible;
+  }
 }
