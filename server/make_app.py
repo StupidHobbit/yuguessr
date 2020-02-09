@@ -9,7 +9,7 @@ USER_URLS = ['http://127.0.0.1:8080', 'http://localhost:8080']
 
 
 def make_app():
-    cors = CORS(allow_origins_list=USER_URLS)
+    cors = CORS(allow_origins_list=USER_URLS, allow_all_methods=True)
 
     app = falcon.API(middleware=[cors.middleware])
 

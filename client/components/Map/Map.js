@@ -1,37 +1,117 @@
 import React, { Component, Fragment } from 'react';
+import { API_ORIGIN } from '../../config';
 import './Map.scss';
 
 class Map extends Component {
+    state = {
+        guessSelected: false,
+    };
+
     playerId = null;
     playerInstance = null;
+    minimapInstance = null;
+    minimapContainer = null;
+    selectedCoords = null;
+    placemark = null;
+    minimapContainerId = 'minimap';
+
+    MINIMAP_CENTER = [55.76, 37.64];
 
     componentDidMount() {
         if (!window.ymaps) {
             // Yandex Maps Script isn't loaded yet, wait for it
             const listener = () => {
                 window.removeEventListener('load', listener);
-                window.ymaps.ready(this.buildMap);
+                window.ymaps.ready(this.yaMapsReady);
             };
             window.addEventListener('load', listener);
         } else {
-            window.ymaps.ready(this.buildMap);
+            window.ymaps.ready(this.yaMapsReady);
         }
     }
 
     componentWillUnmount() {
+        this.destroyEverything();
+    }
+
+    destroyEverything = () => {
         if (this.playerInstance) {
             this.playerInstance.destroy();
             this.playerInstance = null;
         }
-    }
+        if (this.minimapInstance) {
+            this.minimapInstance.destroy();
+            this.minimapInstance = null;
+        }
+    };
+
+    buildEverything = () => {
+        this.buildPanoram();
+        this.buildMiniMap();
+    };
+
+    reset = () => {
+        this.destroyEverything();
+        this.buildEverything();
+    };
+
+    yaMapsReady = () => {
+        this.buildEverything();
+    };
 
     handlePanoramaError = (error) => {
         console.error('Poop: panorama error', error);
     };
 
-    buildMap = () => {
+    handleMiniMapClick = (e) => {
+        const { guessSelected } = this.state;
+        if (this.placemark) {
+            this.minimapInstance.geoObjects.remove(this.placemark);
+            this.placemark = null;
+        }
+        this.selectedCoords = e.get('coords');
+        this.placemark = (
+            new ymaps.Placemark(this.selectedCoords, {}, {
+                iconLayout: 'default#image',
+                iconImageSize: [30, 42],
+                iconImageOffset: [-3, -42]
+            })
+        );
+        this.minimapInstance.geoObjects.add(this.placemark);
+        if (!guessSelected) {
+            this.setState({ guessSelected: true });
+        }
+    };
+
+    sendGuess = () => {
         const { data: {
-            gameId, // TODO: send on map submit
+            gameId,
+        } = {} } = this.props;
+        const [longitude, latitude] = this.selectedCoords;
+        fetch(`${API_ORIGIN}/game/${gameId}?longitude=${longitude}&latitude=${latitude}`, {
+            method: 'PUT',
+        }).then((res) => {
+            return res.json();
+        }).then((data) => {
+            // TODO: render the victory screen
+        }).catch((err) => {
+            this.handlePanoramaError(err);
+        });
+    };
+
+    buildMiniMap = () => {
+        this.minimapInstance = new ymaps.Map(this.minimapContainerId, {
+            center: this.MINIMAP_CENTER,
+            zoom: 2,
+            controls: ['zoomControl'],
+        }, {
+            suppressMapOpenBlock: true,
+        });
+        this.minimapInstance.events.add('click', this.handleMiniMapClick);
+    };
+
+    buildPanoram = () => {
+        const { data: {
             azimuth,
             latitude,
             longitude,
@@ -76,6 +156,7 @@ class Map extends Component {
     };
 
     render() {
+        const { guessSelected } = this.state;
         const { data: { totalPoints } = {} } = this.props;
 
         if (!this.playerId) {
@@ -86,7 +167,25 @@ class Map extends Component {
             <Fragment>
                 <header className="game-header">Yuguesser, Score: {totalPoints}</header>
                 <div className="player" id={this.playerId} />
-                <div className="minimap" />
+                <div
+                    ref={(el) => {
+                        this.minimapContainer = el;
+                    }}
+                    className="minimap"
+                >
+                    <div className="minimap__outer-wrapper">
+                        <div
+                            className="minimap__wrapper"
+                            id={this.minimapContainerId}
+                        />
+                    </div>
+                </div>
+                <button
+                    onClick={this.sendGuess}
+                    className={`guess-button ${guessSelected ? 'guess-button_visible' : '' }`}
+                >
+                    Guess my ass
+                </button>
             </Fragment>
         );
     }
