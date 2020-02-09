@@ -1,6 +1,3 @@
-from functools import lru_cache
-from math import sqrt
-
 import falcon
 import geopy.distance
 

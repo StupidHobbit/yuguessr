@@ -51,6 +51,29 @@ Get information about game with id = {game_id}
 }
 ```
 
+### PUT `/game/{game_id}/`
+
+Guess position for game with id = {game_id} for current_map
+
+##### Request params
+
+- `longitude: float` 
+- `latitude: float` 
+
+##### Response format
+
+- `distance: string` distance (meters) between real position and the guessed one
+- `points: int` amount of earned points for the current map 
+
+##### Response example:
+
+```json
+{
+    "distance": 22.26535965421287,
+    "points": 4999
+}
+```
+
 ### GET `/game/{game_id}/map/{map_number}`
 
 Get information about map with number = {map_number} for game with id = {game_id}
