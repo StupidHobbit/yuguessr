@@ -17,9 +17,17 @@ class LevelCreator(RedisResource):
         self.title = title
 
     def create(self, *places: Place):
+        self.redis.flushdb()
+
         level_id = self.create_object('level', title=self.title, size=len(places))
         for place in places:
-            self.create_object(f'level:{level_id}:place', **place.__dict__)
+            position_id = self.create_position(place.longitude, place.latitude)
+            self.create_object(
+                f'level:{level_id}:place',
+                position_id=position_id,
+                zenith=place.longitude,
+                azimuth=place.latitude,
+            )
 
 
 if __name__ == '__main__':

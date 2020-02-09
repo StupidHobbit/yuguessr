@@ -14,16 +14,3 @@ class Resource(RedisResource):
         game_id = self.create_object('game', total_points=0, map_number=1, current_map=1)
         self.create_map(game_id)
         return game_id
-
-    def create_map(self, game_id: int) -> int:
-        level_id = 1
-        level = self.get_object('level', level_id)
-
-        place_id = randint(1, int(level['size']))
-        place = self.get_object(f'level:{level_id}:place', place_id)
-
-        return self.create_object(
-            f'map:{game_id}',
-            points=0,
-            **place
-        )
